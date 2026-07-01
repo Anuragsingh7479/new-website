@@ -26,7 +26,10 @@ export interface ServerUser {
 }
 
 const URI = process.env.MONGODB_URI;
-const DB_NAME = process.env.MONGODB_DB || "nexthireai";
+// Guard against a mis-pasted MONGODB_DB (e.g. the whole connection string). Mongo
+// database names can't contain / \ . " $ * < > : | ? — fall back to a safe default.
+const rawDbName = process.env.MONGODB_DB || "nexthireai";
+const DB_NAME = /^[A-Za-z0-9_-]{1,63}$/.test(rawDbName) ? rawDbName : "nexthireai";
 export const dbConfigured = Boolean(URI);
 
 // Cache the client across hot reloads (dev) and warm invocations (serverless).
