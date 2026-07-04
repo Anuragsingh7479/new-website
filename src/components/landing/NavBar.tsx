@@ -3,8 +3,8 @@ import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
 
 const NAV_LINKS = [
+  { label: "Live Demo", href: "/demo" },
   { label: "Templates", href: "/#templates" },
-  { label: "Features", href: "/#features" },
   { label: "ATS Score", href: "/ats" },
   { label: "Pricing", href: "/pricing" },
 ];

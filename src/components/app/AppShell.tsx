@@ -108,9 +108,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href="/pricing"
                 className="rounded-md bg-primary px-3 py-1.5 text-[13px] font-medium text-on-primary hover:bg-primary-pressed"
               >
-                Subscribe
+                Upgrade
               </Link>
             )}
+            <button
+              onClick={() => {
+                signOut();
+                router.replace("/login");
+              }}
+              className="hidden rounded-md border border-hairline px-3 py-1.5 text-[13px] text-mute hover:text-ink md:block"
+            >
+              ⏻ Sign out
+            </button>
           </div>
         </header>
 
