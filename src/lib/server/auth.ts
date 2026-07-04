@@ -94,7 +94,8 @@ export function publicUser(u: ServerUser) {
     uid: u.id,
     email: u.email,
     name: u.name,
-    emailVerified: true,
+    // Old accounts (field absent) are treated as verified; new signups start false.
+    emailVerified: u.emailVerified !== false,
     plan: u.plan,
     subscriptionStatus: status,
     planExpiresAt: u.planExpiresAt,

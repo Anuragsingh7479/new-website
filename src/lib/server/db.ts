@@ -21,6 +21,9 @@ export interface ServerUser {
   planExpiresAt: number | null;
   createdAt: number;
   lastSeenAt: number;
+  emailVerified?: boolean;      // new signups start false; must verify via OTP
+  verifyOtpHash?: string;
+  verifyOtpExpires?: number;
   resetOtpHash?: string;
   resetOtpExpires?: number;
 }
@@ -74,6 +77,16 @@ export async function touchUser(id: string) {
 export async function setResetOtp(id: string, hash: string, expires: number) {
   const db = await getDb();
   await db.collection("users").updateOne({ _id: id as never }, { $set: { resetOtpHash: hash, resetOtpExpires: expires } });
+}
+export async function setVerifyOtp(id: string, hash: string, expires: number) {
+  const db = await getDb();
+  await db.collection("users").updateOne({ _id: id as never }, { $set: { verifyOtpHash: hash, verifyOtpExpires: expires } });
+}
+export async function markEmailVerified(id: string) {
+  const db = await getDb();
+  await db
+    .collection("users")
+    .updateOne({ _id: id as never }, { $set: { emailVerified: true }, $unset: { verifyOtpHash: "", verifyOtpExpires: "" } });
 }
 export async function updatePassword(id: string, passwordHash: string) {
   const db = await getDb();

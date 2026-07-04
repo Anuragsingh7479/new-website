@@ -13,6 +13,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
   }
 
+  // Block unverified accounts (new signups must confirm their email first).
+  if (user.emailVerified === false) {
+    return NextResponse.json(
+      { error: "Please verify your email first.", needsVerification: true, email: user.email },
+      { status: 403 }
+    );
+  }
+
   await touchUser(user.id);
   const res = NextResponse.json({ user: publicUser(user) });
   setSessionCookie(res, user.id);

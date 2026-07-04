@@ -21,7 +21,11 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      await signIn(email, password);
+      const res = await signIn(email, password);
+      if (res.needsVerification) {
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not sign in.");

@@ -34,6 +34,21 @@ export async function sendEmail(opts: { to: string; subject: string; text: strin
   return true;
 }
 
+/** Email-verification code body. */
+export function verifyEmail(code: string) {
+  return {
+    subject: "Verify your NextHireAI account",
+    text: `Welcome to NextHireAI! Your verification code is ${code}. It expires in 15 minutes.`,
+    html: `
+      <div style="font-family:Inter,Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#111">
+        <h2 style="margin:0 0 8px">Welcome to NextHireAI 🎉</h2>
+        <p style="color:#555;margin:0 0 20px">Enter this code to verify your email and activate your account. It expires in 15 minutes.</p>
+        <div style="font-size:32px;font-weight:700;letter-spacing:8px;background:#f4f4f6;border-radius:10px;padding:16px;text-align:center">${code}</div>
+        <p style="color:#999;font-size:12px;margin-top:20px">If you didn't create this account, you can ignore this email.</p>
+      </div>`,
+  };
+}
+
 /** Branded OTP email body. */
 export function otpEmail(code: string) {
   return {

@@ -88,10 +88,11 @@ export function ResumeBuilder({ initial }: { initial: Resume }) {
     }
   }
 
-  function download(kind: "PDF" | "DOCX") {
+  async function download() {
     if (!requirePro()) return;
-    // Pro path: in production this calls /api/download/{pdf,docx} (server-verified).
-    window.print();
+    // Latest edit save karo, phir sirf resume wala clean print-view kholo.
+    if (user) await data.saveResume(user.uid, { ...resume, updatedAt: Date.now() });
+    window.open(`/print/${resume.id}`, "_blank");
   }
 
   const firstExp = d.experience[0];
@@ -250,11 +251,8 @@ export function ResumeBuilder({ initial }: { initial: Resume }) {
             })}
           </div>
           <div className="flex gap-2">
-            <Button size="sm" variant="install" onClick={() => download("DOCX")}>
-              {hasAccess ? "" : "🔒 "}DOCX
-            </Button>
-            <Button size="sm" onClick={() => download("PDF")}>
-              {hasAccess ? "⬇ " : "🔒 "}PDF
+            <Button size="sm" onClick={() => download()}>
+              {hasAccess ? "⬇ " : "🔒 "}Download PDF
             </Button>
           </div>
         </div>

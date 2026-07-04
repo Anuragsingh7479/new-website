@@ -22,8 +22,10 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     try {
-      await signUp(name, email, password);
-      router.push("/dashboard");
+      const res = await signUp(name, email, password);
+      const q = new URLSearchParams({ email });
+      if (res.devOtp) q.set("dev", res.devOtp);
+      router.push(`/verify-email?${q.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create account.");
       setLoading(false);

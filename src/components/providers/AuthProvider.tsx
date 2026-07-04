@@ -4,14 +4,22 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { AppUser } from "@/lib/types";
 import { isProUser, hasAppAccess } from "@/lib/types";
 
+export interface AuthActionResult {
+  needsVerification?: boolean;
+  email?: string;
+  devOtp?: string;
+}
+
 interface AuthContextValue {
   user: AppUser | null;
   loading: boolean;
   isPro: boolean;
   /** Active Pro subscriber OR the admin. */
   hasAccess: boolean;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (name: string, email: string, password: string) => Promise<AuthActionResult>;
+  signIn: (email: string, password: string) => Promise<AuthActionResult>;
+  verifyEmail: (email: string, otp: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<AuthActionResult>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -64,13 +72,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   const signUp = useCallback(async (name: string, email: string, password: string) => {
+    // Returns { needsVerification, email, devOtp? } — no session until verified.
     const data = await post("/api/auth/signup", { name, email, password });
-    setUser(data.user);
+    return data as AuthActionResult;
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const data = await post("/api/auth/login", { email, password });
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 403 && data.needsVerification) return data as AuthActionResult;
+    if (!res.ok) throw new Error(data.error || "Could not sign in.");
     setUser(data.user);
+    return {} as AuthActionResult;
+  }, []);
+
+  const verifyEmail = useCallback(async (email: string, otp: string) => {
+    const data = await post("/api/auth/verify-email", { email, otp });
+    setUser(data.user);
+  }, []);
+
+  const resendVerification = useCallback(async (email: string) => {
+    return (await post("/api/auth/resend-verification", { email })) as AuthActionResult;
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
@@ -103,13 +129,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       hasAccess: hasAppAccess(user),
       signUp,
       signIn,
+      verifyEmail,
+      resendVerification,
       signInWithGoogle,
       signOut,
       resetPassword,
       updateName,
       refresh,
     }),
-    [user, loading, signUp, signIn, signInWithGoogle, signOut, resetPassword, updateName, refresh]
+    [user, loading, signUp, signIn, verifyEmail, resendVerification, signInWithGoogle, signOut, resetPassword, updateName, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
