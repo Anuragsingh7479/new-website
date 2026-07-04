@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { usePremium } from "@/components/providers/PremiumProvider";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import * as data from "@/lib/data";
 import { uid, blankResumeData } from "@/lib/data";
-import type { Resume } from "@/lib/types";
+import { FREE_RESUME_LIMIT, type Resume } from "@/lib/types";
 
 export default function ResumesPage() {
-  const { user } = useAuth();
+  const { user, hasAccess } = useAuth();
+  const { openUpgrade } = usePremium();
   const router = useRouter();
   const [resumes, setResumes] = useState<Resume[]>([]);
 
@@ -25,6 +27,12 @@ export default function ResumesPage() {
   if (!user) return null;
 
   async function create() {
+    if (!hasAccess && resumes.length >= FREE_RESUME_LIMIT) {
+      openUpgrade(
+        `Free plan me sirf ${FREE_RESUME_LIMIT} resume ban sakte hain. Unlimited resumes ke liye Pro lein.`
+      );
+      return;
+    }
     const now = Date.now();
     const r: Resume = {
       id: uid(),

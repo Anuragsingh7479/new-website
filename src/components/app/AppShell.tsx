@@ -5,11 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Logo } from "@/components/landing/Logo";
-import { Paywall } from "./Paywall";
 import { PLAN_LABELS, hasAppAccess, isAdminUser } from "@/lib/types";
-
-// Routes a signed-in user without a subscription may still reach (to pay).
-const ALLOWED_WITHOUT_SUB = ["/billing", "/checkout", "/account"];
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: "▦" },
@@ -38,9 +34,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const access = hasAppAccess(user); // active Pro subscriber or admin
+  const access = hasAppAccess(user); // Pro or admin — controls the Upgrade nudge
   const admin = isAdminUser(user);
-  const routeAllowed = ALLOWED_WITHOUT_SUB.some((p) => pathname.startsWith(p));
 
   return (
     <div className="flex min-h-screen">
@@ -106,7 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   : "border-hairline text-mute")
               }
             >
-              {admin ? "Admin" : isPro ? PLAN_LABELS[user.plan] : "No plan"}
+              {admin ? "Admin" : isPro ? PLAN_LABELS[user.plan] : "Free plan"}
             </span>
             {!access && (
               <Link
@@ -149,9 +144,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        <main className="flex-1 px-6 py-7">
-          {access || routeAllowed ? children : <Paywall />}
-        </main>
+        <main className="flex-1 px-6 py-7">{children}</main>
       </div>
     </div>
   );

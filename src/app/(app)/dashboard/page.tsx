@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { usePremium } from "@/components/providers/PremiumProvider";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/app/PageHeader";
 import * as data from "@/lib/data";
-import type { Resume, CoverLetter } from "@/lib/types";
+import { FREE_RESUME_LIMIT, type Resume, type CoverLetter } from "@/lib/types";
 import { uid, blankResumeData } from "@/lib/data";
 
 export default function DashboardPage() {
-  const { user, isPro } = useAuth();
+  const { user, isPro, hasAccess } = useAuth();
+  const { openUpgrade } = usePremium();
   const router = useRouter();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [covers, setCovers] = useState<CoverLetter[]>([]);
@@ -38,6 +40,12 @@ export default function DashboardPage() {
   if (!user) return null;
 
   async function createResume() {
+    if (!hasAccess && resumes.length >= FREE_RESUME_LIMIT) {
+      openUpgrade(
+        `Free plan me sirf ${FREE_RESUME_LIMIT} resume. Unlimited resumes ke liye Pro lein.`
+      );
+      return;
+    }
     const now = Date.now();
     const r: Resume = {
       id: uid(),
@@ -54,7 +62,7 @@ export default function DashboardPage() {
   const stats = [
     { label: "Resumes", value: resumes.length, href: "/resumes" },
     { label: "Cover letters", value: covers.length, href: "/cover-letters" },
-    { label: "Plan", value: isPro ? "Pro" : "Admin", href: "/billing" },
+    { label: "Plan", value: isPro ? "Pro" : hasAccess ? "Admin" : "Free", href: "/billing" },
   ];
 
   return (
@@ -75,6 +83,19 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
+
+      {!hasAccess && (
+        <Card className="mt-4 flex flex-wrap items-center justify-between gap-4 border-accent-yellow/40">
+          <div>
+            <div className="text-sm font-semibold text-ink">You&apos;re on the Free plan 🎉</div>
+            <div className="mt-1 text-sm text-mute">
+              Build &amp; preview for free. Upgrade to Pro to <b className="text-ink">download</b>,
+              unlock the <b className="text-ink">full ATS analysis</b> &amp; premium templates.
+            </div>
+          </div>
+          <Button href="/pricing">Upgrade to Pro</Button>
+        </Card>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <RecentList

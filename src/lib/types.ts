@@ -87,6 +87,9 @@ export interface AtsReport {
   tips: string[];
 }
 
+/** Free tier can create up to this many resumes; Pro is unlimited. */
+export const FREE_RESUME_LIMIT = 2;
+
 export type PaymentRequestStatus = "pending" | "approved" | "rejected";
 
 export interface PaymentRequest {

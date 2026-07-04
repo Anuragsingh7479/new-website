@@ -7,6 +7,21 @@ import { Button } from "@/components/ui/Button";
 
 const PLANS = [
   {
+    id: "free" as const,
+    name: "Free",
+    price: "₹0",
+    cadence: "forever",
+    features: [
+      "Build resumes & cover letters",
+      "Live preview + basic templates",
+      "Limited AI generation",
+      "ATS score (blurred preview)",
+      "❌ No downloads",
+      "❌ No premium templates",
+    ],
+    cta: "Start free",
+  },
+  {
     id: "pro_1m" as const,
     name: "Pro · 1 Month",
     price: "₹699",
@@ -44,7 +59,7 @@ export function PricingCards() {
   const router = useRouter();
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-5 sm:grid-cols-2">
+    <div className="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {PLANS.map((p) => (
         <div
           key={p.id}
@@ -74,13 +89,19 @@ export function PricingCards() {
             ))}
           </ul>
           <div className="mt-6">
-            <Button className="w-full" onClick={() => router.push(`/checkout/${p.id}`)}>
-              {p.cta}
-            </Button>
+            {p.id === "free" ? (
+              <Button href="/signup" variant="install" className="w-full">
+                {p.cta}
+              </Button>
+            ) : (
+              <Button className="w-full" onClick={() => router.push(`/checkout/${p.id}`)}>
+                {p.cta}
+              </Button>
+            )}
           </div>
         </div>
       ))}
-      <p className="text-center text-xs text-stone sm:col-span-2">
+      <p className="text-center text-xs text-stone sm:col-span-2 lg:col-span-3">
         {isPro
           ? "You're on Pro — thank you! Manage your plan in Billing."
           : "Pay via UPI — your access is activated after the admin verifies your payment."}

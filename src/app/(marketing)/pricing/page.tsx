@@ -14,8 +14,8 @@ export default function PricingPage() {
           Simple, honest pricing
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-mute">
-          Choose a plan to unlock the full builder, AI generation, the complete ATS analysis,
-          premium templates, and PDF/DOCX downloads.
+          Start free — build &amp; preview your resume at no cost. Upgrade to Pro to download,
+          unlock the full ATS analysis, and use premium templates.
         </p>
       </div>
       <PricingCards />
