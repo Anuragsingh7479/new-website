@@ -145,6 +145,144 @@ body {
   .marquee-track { animation: none; }
 }
 
+/* ── Splash / logo loading animation ──────────────────────────────────────── */
+.nh-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-canvas);
+  transition: opacity 0.45s ease;
+}
+.nh-splash-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.nh-splash-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.nh-splash-logo svg {
+  animation: nhLogoPop 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.nh-splash-n {
+  stroke-dasharray: 64;
+  stroke-dashoffset: 64;
+  animation: nhDraw 0.9s 0.2s ease forwards;
+}
+.nh-splash-word {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--color-ink);
+  opacity: 0;
+  animation: nhFadeUp 0.6s 0.55s ease forwards;
+}
+.nh-splash-word span {
+  color: var(--color-mute);
+}
+.nh-splash-bar {
+  width: 120px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-hairline);
+  overflow: hidden;
+  opacity: 0;
+  animation: nhFadeUp 0.5s 0.7s ease forwards;
+}
+.nh-splash-bar i {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--color-ink);
+  animation: nhSlide 1s 0.7s ease-in-out infinite;
+}
+@keyframes nhDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes nhLogoPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes nhFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nhSlide {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+/* ── Emergent-style auth background (space glow + twinkling stars) ─────────── */
+.auth-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 75% 45% at 50% 118%, rgba(74, 108, 220, 0.32), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% -12%, rgba(28, 38, 78, 0.45), transparent 70%),
+    var(--color-canvas);
+}
+.auth-stars {
+  position: absolute;
+  inset: 0;
+}
+.auth-stars span {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  animation: nhTwinkle 3.6s ease-in-out infinite;
+}
+@keyframes nhTwinkle {
+  0%, 100% { opacity: 0.12; transform: scale(0.7); }
+  50% { opacity: 0.7; transform: scale(1); }
+}
+/* Emergent-style glowing pill CTA */
+.glow-cta {
+  position: relative;
+  isolation: isolate;
+}
+.glow-cta::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4a6cdc, #7c5ae0, #4a6cdc);
+  background-size: 200% 100%;
+  filter: blur(10px);
+  opacity: 0.55;
+  z-index: -1;
+  animation: nhGlow 4s linear infinite;
+}
+@keyframes nhGlow {
+  to { background-position: 200% 0; }
+}
+
+/* ── Reusable entrance + hover polish ─────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes nhRiseIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .nh-rise {
+    opacity: 0;
+    animation: nhRiseIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  .nh-lift {
+    transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1), border-color 0.2s;
+  }
+  .nh-lift:hover {
+    transform: translateY(-3px);
+  }
+}
+
 /* responsive — mirror the original hero breakpoints */
 @media (max-width: 960px) {
   .nav-links { display: none !important; }

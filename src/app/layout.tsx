@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { VisitorTracker } from "@/components/analytics/VisitorTracker";
+import { SplashScreen } from "@/components/SplashScreen";
 
 // Inter carries the brand voice (ss03 enabled site-wide via globals.css).
 const inter = Inter({
@@ -64,6 +65,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body>
+        <SplashScreen />
         <Providers>
           <VisitorTracker />
           {children}
