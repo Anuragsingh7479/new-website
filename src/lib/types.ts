@@ -24,9 +24,22 @@ export type TemplateId =
   | "minimal"
   | "creative"
   | "executive"
-  | "student";
+  | "student"
+  | "elegant"
+  | "corporate"
+  | "sidebar"
+  | "compact"
+  | "bold"
+  | "onyx";
 
-export const PREMIUM_TEMPLATES: TemplateId[] = ["creative", "executive"];
+export const PREMIUM_TEMPLATES: TemplateId[] = [
+  "creative",
+  "executive",
+  "elegant",
+  "sidebar",
+  "bold",
+  "onyx",
+];
 
 export interface ResumeExperience {
   id: string;

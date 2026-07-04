@@ -91,22 +91,24 @@ export function ResumePreview({
     </div>
   );
 
-  // Creative = two-column sidebar layout; others = single column.
-  const isCreative = template === "creative";
-  const isProfessional = template === "professional";
+  // Layout family: sidebar (two-column) / band (top color block) / single column.
+  const SIDEBAR: TemplateId[] = ["creative", "sidebar"];
+  const BAND: TemplateId[] = ["professional", "corporate", "onyx"];
+  const isSidebar = SIDEBAR.includes(template);
+  const isBand = BAND.includes(template);
 
   return (
     <div className={`rp-paper rp-${template}`}>
       <RpStyles />
-      {template === "modern" && <div className="rp-accent" />}
+      {(template === "modern" || template === "bold") && <div className="rp-accent" />}
 
-      {isProfessional && (
+      {isBand && (
         <div className="rp-band">
-          <Header />
+          <Header light />
         </div>
       )}
 
-      {isCreative ? (
+      {isSidebar ? (
         <div className="rp-grid">
           <div className="rp-side">
             <Header light />
@@ -120,7 +122,7 @@ export function ResumePreview({
         </div>
       ) : (
         <div className="rp-pad">
-          {!isProfessional && <Header />}
+          {!isBand && <Header />}
           <Summary />
           <Experience />
           <Education />
@@ -172,6 +174,54 @@ function RpStyles() {
       .rp-student .rp-name{color:#1f8a5b}
       .rp-student .rp-h-student{color:#1f8a5b}
       .rp-student .rp-skill-student{background:#e7f6ee;color:#1f6e49}
+
+      /* elegant (premium) — refined serif + gold */
+      .rp-elegant .rp-pad{padding:34px 42px}
+      .rp-elegant .rp-name{font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:600;letter-spacing:0;color:#1a1a2e}
+      .rp-elegant .rp-title-elegant{color:#b08d57;font-weight:600;letter-spacing:.5px}
+      .rp-elegant .rp-h-elegant{font-family:Georgia,serif;color:#1a1a2e;letter-spacing:.5px;text-transform:none;font-size:14px;border-bottom:1px solid #dcc9a3;padding-bottom:4px}
+      .rp-elegant .rp-skill-elegant{background:#f7f2e9;color:#7a5f2e;border:1px solid #ecdcbf}
+
+      /* corporate — navy band + blue accent */
+      .rp-corporate .rp-band{background:#12324f;color:#fff;padding:24px 34px;border-bottom:4px solid #3b82c4}
+      .rp-corporate .rp-band .rp-name{font-size:26px}
+      .rp-corporate .rp-title-corporate{color:#a9cdec}
+      .rp-corporate .rp-band .rp-contact-corporate{color:#cfe0f0}
+      .rp-corporate .rp-h-corporate{color:#12324f;border-left:3px solid #3b82c4;padding-left:8px;letter-spacing:1px}
+      .rp-corporate .rp-skill-corporate{background:#eaf1f8;color:#12324f}
+
+      /* sidebar (premium) — navy left column */
+      .rp-sidebar .rp-grid{display:grid;grid-template-columns:36% 1fr}
+      .rp-sidebar .rp-side{background:#12324f;color:#e8eef5;padding:30px 22px;min-height:560px}
+      .rp-sidebar .rp-side .rp-name{color:#fff;font-size:22px}
+      .rp-sidebar .rp-side .rp-title-sidebar{color:#9cc4ef}
+      .rp-sidebar .rp-side .rp-contact-sidebar{flex-direction:column;gap:4px;color:#c3d4e6 !important}
+      .rp-sidebar .rp-side .rp-h-sidebar{color:#9cc4ef}
+      .rp-sidebar .rp-side .rp-skill-sidebar{background:#1e456e;color:#e8eef5}
+      .rp-sidebar .rp-main{padding:30px 26px}
+      .rp-sidebar .rp-main .rp-h-sidebar{color:#12324f;border-bottom:1.5px solid #12324f;padding-bottom:3px}
+
+      /* compact — dense, ATS-friendly */
+      .rp-compact .rp-pad{padding:24px 30px}
+      .rp-compact .rp-name{font-size:22px}
+      .rp-compact .rp-title-compact{font-size:12px}
+      .rp-compact .rp-h-compact{font-size:10px;letter-spacing:1px;color:#333;border-bottom:1px solid #ccc;padding-bottom:2px;margin-bottom:5px}
+      .rp-compact .rp-skill-compact{background:#eee;font-size:10px;padding:2px 6px}
+
+      /* bold (premium) — big name + filled headers */
+      .rp-bold .rp-accent{height:10px;background:#111}
+      .rp-bold .rp-name{font-size:32px;font-weight:800;letter-spacing:-1px;color:#111}
+      .rp-bold .rp-title-bold{color:#e11d48;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:12px}
+      .rp-bold .rp-h-bold{background:#111;color:#fff;display:inline-block;padding:3px 9px;border-radius:3px;letter-spacing:1px}
+      .rp-bold .rp-skill-bold{background:#111;color:#fff}
+
+      /* onyx (premium) — black header block + gold */
+      .rp-onyx .rp-band{background:#0d0d0d;color:#fff;padding:28px 34px}
+      .rp-onyx .rp-band .rp-name{font-family:Georgia,serif;font-size:28px}
+      .rp-onyx .rp-title-onyx{color:#c9a227;letter-spacing:2px;text-transform:uppercase;font-size:11px}
+      .rp-onyx .rp-band .rp-contact-onyx{color:#bdbdbd}
+      .rp-onyx .rp-h-onyx{font-family:Georgia,serif;color:#0d0d0d;letter-spacing:1px;text-transform:none;font-size:14px;border-bottom:1px solid #c9a227;padding-bottom:3px}
+      .rp-onyx .rp-skill-onyx{background:#0d0d0d;color:#c9a227}
     `}</style>
   );
 }

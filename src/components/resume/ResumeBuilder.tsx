@@ -20,9 +20,15 @@ const TEMPLATES: { id: TemplateId; label: string }[] = [
   { id: "modern", label: "Modern" },
   { id: "professional", label: "Professional" },
   { id: "minimal", label: "Minimal" },
+  { id: "corporate", label: "Corporate" },
+  { id: "compact", label: "Compact" },
+  { id: "student", label: "Student" },
   { id: "creative", label: "Creative" },
   { id: "executive", label: "Executive" },
-  { id: "student", label: "Student" },
+  { id: "elegant", label: "Elegant" },
+  { id: "sidebar", label: "Sidebar" },
+  { id: "bold", label: "Bold" },
+  { id: "onyx", label: "Onyx" },
 ];
 
 export function ResumeBuilder({ initial }: { initial: Resume }) {
