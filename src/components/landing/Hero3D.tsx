@@ -1,8 +1,8 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial, Stars } from "@react-three/drei";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Group } from "three";
 
 // Central object: a slow-rotating wireframe shell around a glowing distorted core.
@@ -36,14 +36,24 @@ function Core() {
   );
 }
 
-// Gentle parallax: nudge the whole scene toward the pointer.
+// Parallax driven by window-level pointer movement (works even though the canvas
+// sits behind the hero copy/overlays).
 function Parallax({ children }: { children: React.ReactNode }) {
   const ref = useRef<Group>(null);
-  const { pointer } = useThree();
+  const target = useRef({ x: 0, y: 0 });
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      target.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      target.current.y = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
   useFrame(() => {
     if (ref.current) {
-      ref.current.rotation.y += (pointer.x * 0.4 - ref.current.rotation.y) * 0.05;
-      ref.current.rotation.x += (-pointer.y * 0.3 - ref.current.rotation.x) * 0.05;
+      ref.current.rotation.y += (target.current.x * 0.7 - ref.current.rotation.y) * 0.06;
+      ref.current.rotation.x += (target.current.y * 0.45 - ref.current.rotation.x) * 0.06;
+      ref.current.position.x += (target.current.x * 0.3 - ref.current.position.x) * 0.05;
     }
   });
   return <group ref={ref}>{children}</group>;
