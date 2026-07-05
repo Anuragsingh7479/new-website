@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { NavBar } from "./NavBar";
-import { MeshStage } from "./MeshStage";
+import { Hypercube } from "./Hypercube";
 import { TrustStrip } from "./TrustStrip";
 
 // Resume-product headline (3 lines), styled with the original display layout.
@@ -61,7 +61,7 @@ export function Hero() {
           className="hero-fade flex justify-center"
           style={{ ["--d" as string]: "160ms" }}
         >
-          <MeshStage glow="mono" size="md" />
+          <Hypercube glow="mono" size="md" />
         </div>
 
         {/* right: mono caption */}
