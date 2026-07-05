@@ -264,6 +264,15 @@ body {
   to { background-position: 200% 0; }
 }
 
+/* ── Hypercube pulsing glow ────────────────────────────────────────────────── */
+.hc-pulse {
+  animation: nhPulse 5s ease-in-out infinite;
+}
+@keyframes nhPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
 /* ── Reusable entrance + hover polish ─────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes nhRiseIn {
